@@ -1,15 +1,15 @@
-export default function Header() {
+import { Sun, Moon } from "lucide-react";
+function Header({darkMode, onToggleDarkMode}) {
   return (
     <header className="mb-12 flex items-center justify-between">
       <h1 className="text-4xl font-bold tracking-[12px] text-white">
         TODO
       </h1>
-      <span
-        className="cursor-default text-4xl text-white"
-        aria-label="Moon icon"
-      >
-        ☾
-      </span>
+      <button
+        onClick={onToggleDarkMode}>  
+        {darkMode ? <Moon size={20}/> : <Sun size={20}/>}
+      </button> 
     </header>
   );
 }
+export default Header;

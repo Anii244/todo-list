@@ -1,8 +1,14 @@
+import { useState } from "react";
 import Header from "./components/Header";
 import TodoList from "./components/TodoList";
-export default function App() {
+function App() {
+  const[darkMode, setDarkMode] = useState(false);
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#fafafa]">
+    <main
+      className={`min-h-screen ${
+        darkMode ? "bg-gray-900 text-white" : "bg-[#fafafa] text-gray-800"
+      }`}
+    >
       <div
         className="absolute left-0 top-0 h-[320px] w-full bg-cover bg-center"
         style={{
@@ -11,9 +17,16 @@ export default function App() {
         }}
       />
       <div className="relative mx-auto w-[calc(100%-32px)] max-w-[530px] pt-[80px]">
-        <Header />
-        <TodoList />
+        <Header
+          darkMode={darkMode}
+          onToggleDarkMode={() => setDarkMode(!darkMode)}
+        />
+        <TodoList
+          darkMode={darkMode}
+          onToggleDarkMode={() => setDarkMode(!darkMode)}
+        />
       </div>
     </main>
   );
 }
+export default App;

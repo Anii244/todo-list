@@ -1,11 +1,17 @@
-
 import { useState } from "react";
-export default function TodoList() {
+function TodoList({darkMode}) {
   const [task, setTask] = useState("");
+  
+  const [filter, setFilter] = useState("All");
   const [todos, setTodos] = useState([
     { id: 1, text: "Take a bath", completed: true },
     { id: 2, text: "Cook rice", completed: false },
   ]);
+  const filteredTodos = todos.filter((todo) => {
+    if (filter === "Active") return !todo.completed;
+    if (filter === "Completed") return todo.completed;
+    return true;
+  });
   function addTask(e) {
     e.preventDefault();
     if (!task.trim()) return;
@@ -31,6 +37,9 @@ export default function TodoList() {
   function deleteTask(id) {
     setTodos(todos.filter((todo) => todo.id !== id));
   }
+  function clearCompleted (){
+    setTodos(todos.filter((todo) => !todo.completed));
+  }
   return (
     <section className="w-full">
       <form
@@ -52,9 +61,10 @@ export default function TodoList() {
           Add
         </button>
       </form>
-      <div className="overflow-hidden rounded-lg bg-white shadow-md">
+      <div className={`overflow-hidden rounded-lg bg-white shadow-md ${
+        darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}`} >
         <ul>
-          {todos.map((todo) => (
+          {filteredTodos.map((todo) => (
             <li
               key={todo.id}
               className="flex min-h-[68px] items-center gap-4 border-b border-gray-100 px-6 py-4"
@@ -88,18 +98,25 @@ export default function TodoList() {
         <footer className="flex flex-wrap items-center justify-between gap-x-3 gap-y-4 px-6 py-5 text-xs font-semibold text-gray-500">
           <span>{todos.filter((todo) => !todo.completed).length} items left</span>
           <div className="flex flex-wrap items-center gap-4">
-            <button type="button" className="text-blue-500">
+            <button type="button" 
+            //  onClick={setFilter("All")}
+             className="text-blue-500">
               All
             </button>
-            <button type="button" className="hover:text-gray-800">
+            <button type="button" 
+              // onClick={setFilter("Active")}
+              className="hover:text-gray-800">
               Active
             </button>
-            <button type="button" className="hover:text-gray-800">
+            <button type="button" 
+              // onClick={setFilter("Completed")}
+              className="hover:text-gray-800">
               Completed
             </button>
           </div>
           <button
             type="button"
+            onClick={clearCompleted}
             className="hover:text-gray-800"
           >
             Clear Completed
@@ -109,3 +126,4 @@ export default function TodoList() {
     </section>
   );
 }
+export default TodoList;

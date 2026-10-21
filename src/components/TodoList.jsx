@@ -1,17 +1,26 @@
-import { useState } from "react";
-function TodoList({darkMode}) {
+import { useState, useEffect } from "react";
+function TodoList() {
   const [task, setTask] = useState("");
-  
   const [filter, setFilter] = useState("All");
-  const [todos, setTodos] = useState([
-    { id: 1, text: "Take a bath", completed: true },
-    { id: 2, text: "Cook rice", completed: false },
-  ]);
+  const [todos, setTodos] = useState(
+    JSON.parse(localStorage.getItem("todos")) || [
+      { id: 1, text: "Take a bath", completed: true },
+      { id: 2, text: "Cook rice", completed: false },
+    ],
+  );
+  function saveTodos(updatedTodos) {
+    localStorage.setItem("todos", JSON.stringify(updatedTodos));
+  }
+  // useEffect(() => {
+  //    localStorage.setItem("todos", JSON.stringify(todos));
+  // }, [todos]);
+
   const filteredTodos = todos.filter((todo) => {
     if (filter === "Active") return !todo.completed;
     if (filter === "Completed") return todo.completed;
     return true;
   });
+
   function addTask(e) {
     e.preventDefault();
     if (!task.trim()) return;
@@ -23,22 +32,28 @@ function TodoList({darkMode}) {
         completed: false,
       },
     ]);
+    setTodos(updatedTodos);
+    saveTodos(updatedTodos);
     setTask("");
   }
   function toggleTask(id) {
     setTodos(
       todos.map((todo) =>
-        todo.id === id
-          ? { ...todo, completed: !todo.completed }
-          : todo
-      )
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
+      ),
     );
+    setTodos(updatedTodos);
+    saveTodos(updatedTodos);
   }
   function deleteTask(id) {
     setTodos(todos.filter((todo) => todo.id !== id));
+    setTodos(updatedTodos);
+    saveTodos(updatedTodos);
   }
-  function clearCompleted (){
+  function clearCompleted() {
     setTodos(todos.filter((todo) => !todo.completed));
+    setTodos(updatedTodos);
+    saveTodos(updatedTodos);
   }
   return (
     <section className="w-full">
@@ -61,8 +76,11 @@ function TodoList({darkMode}) {
           Add
         </button>
       </form>
-      <div className={`overflow-hidden rounded-lg bg-white shadow-md ${
-        darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"}`} >
+      <div
+      //  className={`overflow-hidden rounded-lg bg-white shadow-md ${
+      //    darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"
+      // }`}
+      >
         <ul>
           {filteredTodos.map((todo) => (
             <li
@@ -96,21 +114,29 @@ function TodoList({darkMode}) {
           ))}
         </ul>
         <footer className="flex flex-wrap items-center justify-between gap-x-3 gap-y-4 px-6 py-5 text-xs font-semibold text-gray-500">
-          <span>{todos.filter((todo) => !todo.completed).length} items left</span>
+          <span>
+            {todos.filter((todo) => !todo.completed).length} items left
+          </span>
           <div className="flex flex-wrap items-center gap-4">
-            <button type="button" 
-            //  onClick={setFilter("All")}
-             className="text-blue-500">
+            <button
+              type="button"
+              onClick={() => setFilter("All")}
+              className="text-blue-500"
+            >
               All
             </button>
-            <button type="button" 
-              // onClick={setFilter("Active")}
-              className="hover:text-gray-800">
+            <button
+              type="button"
+              onClick={() => setFilter("Active")}
+              className="hover:text-gray-800"
+            >
               Active
             </button>
-            <button type="button" 
-              // onClick={setFilter("Completed")}
-              className="hover:text-gray-800">
+            <button
+              type="button"
+              onClick={() => setFilter("Completed")}
+              className="hover:text-gray-800"
+            >
               Completed
             </button>
           </div>

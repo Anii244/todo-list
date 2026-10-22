@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-function TodoList() {
+function TodoList({darkMode}) {
   const [task, setTask] = useState("");
   const [filter, setFilter] = useState("All");
   const [todos, setTodos] = useState(
@@ -24,34 +24,35 @@ function TodoList() {
   function addTask(e) {
     e.preventDefault();
     if (!task.trim()) return;
-    setTodos([
+    const updatedTodos = [
       ...todos,
       {
         id: Date.now(),
         text: task.trim(),
         completed: false,
       },
-    ]);
+    ];
     setTodos(updatedTodos);
     saveTodos(updatedTodos);
     setTask("");
   }
   function toggleTask(id) {
-    setTodos(
-      todos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo,
-      ),
+    const updatedTodos = todos.map((todo) =>
+       todo.id === id
+         ? { ...todo, completed: !todo.completed }
+         : todo
     );
+
     setTodos(updatedTodos);
     saveTodos(updatedTodos);
   }
   function deleteTask(id) {
-    setTodos(todos.filter((todo) => todo.id !== id));
+    const updatedTodos = todos.filter((todo) => todo.id !== id);
     setTodos(updatedTodos);
     saveTodos(updatedTodos);
   }
   function clearCompleted() {
-    setTodos(todos.filter((todo) => !todo.completed));
+    const updatedTodos = todos.filter((todo) => !todo.completed);
     setTodos(updatedTodos);
     saveTodos(updatedTodos);
   }
@@ -59,7 +60,9 @@ function TodoList() {
     <section className="w-full">
       <form
         onSubmit={addTask}
-        className="mb-12 flex h-[69px] items-center gap-4 rounded-md bg-white px-6 shadow-sm"
+        className={`mb-12 flex h-[69px] items-center gap-4 rounded-md px-6 shadow-sm ${
+          darkMode ? "bg-gray-800" : "bg-white"
+        }`}
       >
         <span className="h-6 w-6 shrink-0 rounded-full border border-gray-200" />
         <input
@@ -67,7 +70,11 @@ function TodoList() {
           value={task}
           onChange={(e) => setTask(e.target.value)}
           placeholder="What to do ?"
-          className="min-w-0 flex-1 bg-transparent text-base text-gray-700 outline-none placeholder:text-gray-400"
+          className={`min-w-0 flex-1 bg-transparent text-base outline-none ${
+             darkMode
+             ? "text-white placeholder:text-gray-400"
+                 : "text-gray-700 placeholder:text-gray-400"
+          }`}
         />
         <button
           type="submit"
@@ -77,15 +84,17 @@ function TodoList() {
         </button>
       </form>
       <div
-      //  className={`overflow-hidden rounded-lg bg-white shadow-md ${
-      //    darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"
-      // }`}
+       className={`overflow-hidden rounded-lg bg-white shadow-md ${
+        darkMode ? "bg-gray-800 text-white" : "bg-white text-gray-800"
+      }`}
       >
         <ul>
           {filteredTodos.map((todo) => (
             <li
               key={todo.id}
-              className="flex min-h-[68px] items-center gap-4 border-b border-gray-100 px-6 py-4"
+              className={`flex min-h-[68px] items-center gap-4 border-b px-6 py-4 ${
+                darkMode ? "border-gray-700" : "border-gray-100"
+              }`}
             >
               <input
                 type="checkbox"
@@ -97,7 +106,9 @@ function TodoList() {
                 className={`min-w-0 flex-1 break-words text-base ${
                   todo.completed
                     ? "text-gray-400 line-through"
-                    : "text-gray-700"
+                    : darkMode
+                      ? "text-gray-100"
+                      : "text-gray-700"
                 }`}
               >
                 {todo.text}

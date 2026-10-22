@@ -23,7 +23,6 @@ function App() {
         />
         <TodoList
           darkMode={darkMode}
-          onToggleDarkMode={() => setDarkMode(!darkMode)}
         />
       </div>
     </main>
